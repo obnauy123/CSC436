@@ -11,6 +11,7 @@ function App() {
   }
   return (
     <div className="App">
+      <h1>To Do List</h1>
       <UserBar addToPosts = {(value)=>addToPosts(value)}/>
       <List posts = {posts}/>
     </div>

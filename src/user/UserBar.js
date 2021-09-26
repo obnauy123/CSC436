@@ -38,11 +38,13 @@ export default function UserBar({addToPosts}) {
   } else {
       return (
           <>
+          <h2>login</h2>
             <Login 
             login = {(user, password) => {
               handleLogin(user,password);
             }}
             />
+            <h2>Register</h2>
             <Register 
               handleRegister={(value)=>{
                 handleRegister(value);

@@ -15,12 +15,19 @@ export default function PostEnter({addToPosts}){
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <label htmlFor="todo-title">Title:</label>
-            <input type="text" name="todo-title" id="todo-title" value={postData.title} onChange={(e)=> setPostData({...postData, title: e.target.value})} />
-            <label htmlFor="todo-description">Description:</label>
-            <textarea value={postData.description} onChange={(e)=> setPostData({...postData, description: e.target.value})}/>
-            <input type="submit" value="submit" disabled = {!postData.title}/>
-        </form>
+        
+        <div>
+            <h3>Enter ToDo</h3>
+            
+            <form onSubmit={handleSubmit}>
+                <label htmlFor="todo-title">Title:</label>
+                <input type="text" name="todo-title" id="todo-title" value={postData.title} onChange={(e)=> setPostData({...postData, title: e.target.value})} />
+                <br/>
+                <br/>
+                <label htmlFor="todo-description">Description:</label>
+                <textarea value={postData.description} onChange={(e)=> setPostData({...postData, description: e.target.value})}/>
+                <input type="submit" value="submit" disabled = {!postData.title}/>
+            </form>
+        </div>
     )
 }
