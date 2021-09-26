@@ -1,23 +1,18 @@
-import logo from './logo.svg';
+import { useState } from 'react';
 import './App.css';
+import List from './List';
+import './user/UserBar.js';
 
+import UserBar from './user/UserBar.js';
 function App() {
+  const [posts, setPosts] = useState([]);
+  const addToPosts = (p) =>{
+    setPosts(posts => [...posts, p]);
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <UserBar addToPosts = {(value)=>addToPosts(value)}/>
+      <List posts = {posts}/>
     </div>
   );
 }
