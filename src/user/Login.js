@@ -8,7 +8,7 @@ export default function Login({dispatchUser}) {
       });
     const handleSubmit = e => {
         e.preventDefault();
-        dispatchUser({type:"LOGIN", loginData});
+        dispatchUser({type:"LOGIN", loginData: loginData});
     };
     return (
         <form onSubmit={handleSubmit}>

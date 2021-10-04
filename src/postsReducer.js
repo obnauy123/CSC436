@@ -3,8 +3,8 @@ export default function postsReducer (state, action) {
         case 'CREATE_POST':
           const newPost = { 
                 id: '_' + Math.random().toString(36).substr(1, 9),
-                title: action.title,
-                description: action.description ? action.description : "",
+                title: action.postData.title,
+                description: action.postData.description ? action.postData.description : "",
                 dateCreated: Date.now().toString(),
                 complete: false,
                 dateCompleted: ""

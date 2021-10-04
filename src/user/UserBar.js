@@ -25,7 +25,7 @@ export default function UserBar({user, posts, dispatchUser, dispatchPost}) {
           <>
           <h2>login</h2>
             <Login 
-            dispatchUser ={dispatchUser}
+              dispatchUser ={dispatchUser}
             />
             <h2>Register</h2>
             <Register 
