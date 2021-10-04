@@ -1,14 +1,14 @@
 import React from 'react'
 import { useState } from 'react';
 
-export default function Register({handleRegister}) {
+export default function Register({dispatchUser}) {
   const [registerData, setRegisterData] = useState({
     username: "",
     password: ""
   });
   const handleSubmit = e =>{
     e.preventDefault();
-    handleRegister(registerData.username);
+    dispatchUser({type:"REGISTER", registerData});
   }
   return (
       <form onSubmit={handleSubmit}>

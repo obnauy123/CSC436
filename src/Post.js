@@ -1,15 +1,13 @@
-import React, { useState } from 'react'
-export default function Post ({title, description, dateCreated}) {
-    const [completedDate, setCompletedDate] = useState();
-    const [isComplete, setIsComplete] = useState(false);
+import React, { useState, useEffect } from 'react'
+export default function Post ({id, title, description, dateCreated, complete, dateCompleted, dispatchPost}) {
+    
+   
     const handleCompleted = () => {
-        setIsComplete(!isComplete);
-        if(!isComplete){
-            setCompletedDate(dateCreated);
-        }else {
-            setCompletedDate("");
-        }
+        dispatchPost({type: 'TOGGLE_POST', id})
+    }
+    const handleDelete = () => {
         
+        dispatchPost({type:'DELETE_POST', id});
     }
     return (
        <div>
@@ -20,7 +18,8 @@ export default function Post ({title, description, dateCreated}) {
           <br />
           <label>completed?</label>
           <input type="checkbox" onChange={handleCompleted} />
-          <i><b>Created on: {completedDate}</b></i>
+          {complete && <><label>completed at: {dateCompleted} </label><br/></>}
+          <button onClick = {handleDelete}>Delete</button>
       </div> 
  )
 }

@@ -1,14 +1,14 @@
 import React from 'react'
 import { useState } from 'react';
 
-export default function Login({login}) {
+export default function Login({dispatchUser}) {
     const [loginData, setLoginData] = useState({
         username: "",
         password: ""
       });
     const handleSubmit = e => {
         e.preventDefault();
-        login(loginData.username, loginData.password);
+        dispatchUser({type:"LOGIN", loginData});
     };
     return (
         <form onSubmit={handleSubmit}>

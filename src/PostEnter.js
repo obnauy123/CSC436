@@ -1,17 +1,15 @@
 import React from 'react'
 import { useState } from 'react';
-export default function PostEnter({addToPosts}){
+export default function PostEnter({dispatchPost}){
     
     const[postData, setPostData] = useState({
         title: "",
-        description: "",
-        dateCreated: Date.now()
+        description: ""
     });
 
     const handleSubmit = e => {
         e.preventDefault();
-        setPostData({...postData, dateCreated: Date.now()});
-        addToPosts(postData);
+        dispatchPost({type:"CREATE_POST", postData});
     };
 
     return (

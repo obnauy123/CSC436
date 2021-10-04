@@ -1,38 +1,23 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import Logout from './Logout'
 import Register from './Register'
 import Login from './Login'
 import PostEnter from '../PostEnter'
+import List from '../List';
 
-export default function UserBar({addToPosts}) {
+export default function UserBar({user, posts, dispatchUser, dispatchPost}) {
   
-  const [user, setUser] = useState('');
-  const [password,setPasswrod] = useState('');
-  const handleRegister = (value) => {
-  };
-  const handleLogin = (u,p) => {
-    setUser(u);
-    setPasswrod(p);
-  }
-  const handleLogout = () =>{
-    setUser('');
-    setPasswrod('');
-  }
-  const handleAddPost = (value) =>{
-    addToPosts(value);
-  }
-  if (user.length > 0  && password.length > 0) {
+  
+  if (user) {
       return (
         <>
         <Logout 
           user={user}
-          handleLogout = {()=>{
-            handleLogout();
-          }}
-        
+          dispatchUser = {dispatchUser}
         />
-        <PostEnter addToPosts = {(value)=>handleAddPost(value)}/>
+        <PostEnter dispatchPost = {dispatchPost}/>
+        <List posts = {posts} dispatchPost ={dispatchPost}/>
         </>
       )
   } else {
@@ -40,15 +25,11 @@ export default function UserBar({addToPosts}) {
           <>
           <h2>login</h2>
             <Login 
-            login = {(user, password) => {
-              handleLogin(user,password);
-            }}
+            dispatchUser ={dispatchUser}
             />
             <h2>Register</h2>
             <Register 
-              handleRegister={(value)=>{
-                handleRegister(value);
-              }} 
+              dispatchUser = {dispatchUser}
             />
           </>
       )

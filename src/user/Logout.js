@@ -1,9 +1,9 @@
 import React from 'react'
 
-export default function Logout({user, handleLogout}) {
+export default function Logout({user, dispatchUser}) {
   const handleSubmit = e => {
     e.preventDefault();
-    handleLogout();
+    dispatchUser({type:"LOGOUT"});
   };
 
     return (
