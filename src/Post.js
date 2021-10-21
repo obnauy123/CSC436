@@ -1,13 +1,41 @@
-import React, { useState, useEffect } from 'react'
-export default function Post ({id, title, description, dateCreated, complete, dateCompleted, dispatchPost}) {
-    
+import React, { useContext, useEffect } from 'react'
+import { useResource } from 'react-request-hook';
+import { StateContext } from './Contexts'
+
+export default function Post ({id, title, description, dateCreated, complete, dateCompleted}) {
+    const [post , deletePost ] = useResource(({id}) => ({
+        url: `/posts/${id}`,
+        method: 'delete',
+    }))
+    const [ posts, getPosts ] = useResource(() => ({
+        url: '/posts',
+        method: 'get'
+      }))
+    useEffect(getPosts, [])
+
+    useEffect(() => {
+        if (posts && posts.data) {
+            dispatch({ type: 'FETCH_POSTS', posts: posts.data.reverse() })
+        }
+    }, [posts])
+
+    const [updateposts , updatePost ] = useResource(({id, title, description, complete, dateCompleted}) => ({
+        url: `/posts/${id}`,
+        method: 'put',
+        data: {title, description, complete, dateCompleted}
+    }))
+
+    const {dispatch} = useContext(StateContext)
    
     const handleCompleted = () => {
-        dispatchPost({type: 'TOGGLE_POST', id})
+        const date = !complete ? Date(Date.now()) : '';
+        updatePost({id: id, title: title, description: description, complete: !complete, dateCompleted: date});
+        dispatch({type: 'TOGGLE_POST', id})
     }
     const handleDelete = () => {
-        
-        dispatchPost({type:'DELETE_POST', id});
+        console.log(id);
+        deletePost({id: id});
+        dispatch({type:'DELETE_POST', id});
     }
     return (
        <div>

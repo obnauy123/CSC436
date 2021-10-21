@@ -1,9 +1,12 @@
 import React from 'react'
-
-export default function Logout({user, dispatchUser}) {
+import { useContext } from 'react/cjs/react.development';
+import { StateContext } from '../Contexts'
+export default function Logout() {
+  const {state, dispatch} = useContext(StateContext)
+  const {user} = state;
   const handleSubmit = e => {
     e.preventDefault();
-    dispatchUser({type:"LOGOUT"});
+    dispatch({type:"LOGOUT"});
   };
 
     return (

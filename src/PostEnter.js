@@ -1,7 +1,16 @@
-import React from 'react'
-import { useState } from 'react';
-export default function PostEnter({dispatchPost}){
-    
+import React, {useState, useContext} from 'react'
+import { StateContext } from './Contexts'
+import { useResource } from 'react-request-hook';
+
+export default function PostEnter(){
+    const {state, dispatch} = useContext(StateContext)
+    const {user} = state;
+    const [post , createPost ] = useResource(({title, description, complete, dateCompleted}) => ({
+        url: '/posts',
+        method: 'post',
+        data: {title, description, complete, dateCompleted}
+    }))
+
     const[postData, setPostData] = useState({
         title: "",
         description: ""
@@ -9,7 +18,8 @@ export default function PostEnter({dispatchPost}){
 
     const handleSubmit = e => {
         e.preventDefault();
-        dispatchPost({type:"CREATE_POST", postData});
+        createPost({title:postData.title, description:postData.description, complete:false, dateCompleted:null});
+        dispatch({type:"CREATE_POST", postData});
     };
 
     return (

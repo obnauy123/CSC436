@@ -1,37 +1,36 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
-import Logout from './Logout'
 import Register from './Register'
 import Login from './Login'
-import PostEnter from '../PostEnter'
-import List from '../List';
+import { StateContext } from '../Contexts'
+import {Button} from 'react-bootstrap'
+import Logout from './Logout'
+export default function UserBar() {
+  const {state} = useContext(StateContext)
 
-export default function UserBar({user, posts, dispatchUser, dispatchPost}) {
-  
-  
-  if (user) {
+  const [showLogin, setShowLogin] = useState(false)
+  const [showRegister, setShowRegister] = useState(false)
+
+  if (state.user) {
       return (
-        <>
-        <Logout 
-          user={user}
-          dispatchUser = {dispatchUser}
-        />
-        <PostEnter dispatchPost = {dispatchPost}/>
-        <List posts = {posts} dispatchPost ={dispatchPost}/>
-        </>
+        
+        <Logout />
+        
       )
   } else {
       return (
-          <>
-          <h2>login</h2>
-            <Login 
-              dispatchUser ={dispatchUser}
-            />
-            <h2>Register</h2>
-            <Register 
-              dispatchUser = {dispatchUser}
-            />
-          </>
+        <div className="justify-content-end">
+          
+            <Button variant="link" onClick={(e) => setShowLogin(true)}>
+                    Login
+            </Button>
+            <Login show={showLogin} handleClose={() => setShowLogin(false)}/>
+            
+            <Button variant="link" onClick={(e) => setShowRegister(true)}>
+                    Register
+            </Button>
+            <Register show={showRegister} handleClose={() => setShowRegister(false)} />
+          </div>
       )
   }
 }
