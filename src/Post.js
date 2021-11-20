@@ -1,53 +1,50 @@
 import React, { useContext, useEffect } from 'react'
 import { useResource } from 'react-request-hook';
 import { StateContext } from './Contexts'
-
+import { Link } from 'react-navi';
+import { useNavigation } from 'react-navi';
 export default function Post ({id, title, description, dateCreated, complete, dateCompleted}) {
-    const [post , deletePost ] = useResource(({id}) => ({
-        url: `/posts/${id}`,
-        method: 'delete',
-    }))
-    const [ posts, getPosts ] = useResource(() => ({
-        url: '/posts',
-        method: 'get'
-      }))
-    useEffect(getPosts, [])
+    
+    const {state, dispatch} = useContext(StateContext) 
+    const [deletedTodo, deleteTodo] = useResource((id) => ({
+        url: `/post/${id}`,
+        method: "delete",
+        headers: {"Authorization": `${state.user.access_token}`}
+    }));
+
+    const [toggledTodo, toggleTodo] = useResource((id, complete) => ({
+        url: `/post/${id}`,
+        method: "patch",
+        data: {
+            complete:complete,
+            dateCompleted: Date.now()
+        },
+        headers: {"Authorization": `${state.user.access_token}`}
+    }));
 
     useEffect(() => {
-        if (posts && posts.data) {
-            dispatch({ type: 'FETCH_POSTS', posts: posts.data.reverse() })
+        if (deletedTodo && deletedTodo.data && deletedTodo.isLoading === false) {
+            dispatch({type: 'DELETE_POST', id: id})
         }
-    }, [posts])
+    }, [deletedTodo])
 
-    const [updateposts , updatePost ] = useResource(({id, title, description, complete, dateCompleted}) => ({
-        url: `/posts/${id}`,
-        method: 'put',
-        data: {title, description, complete, dateCompleted}
-    }))
-
-    const {dispatch} = useContext(StateContext)
-   
-    const handleCompleted = () => {
-        const date = !complete ? Date(Date.now()) : '';
-        updatePost({id: id, title: title, description: description, complete: !complete, dateCompleted: date});
-        dispatch({type: 'TOGGLE_POST', id})
-    }
-    const handleDelete = () => {
-        console.log(id);
-        deletePost({id: id});
-        dispatch({type:'DELETE_POST', id});
-    }
+    useEffect(() => {
+        if (toggledTodo && toggledTodo.data && toggledTodo.isLoading === false) {
+            dispatch({type: 'TOGGLE_POST', complete:toggledTodo.data.complete, dateCompleted:toggledTodo.data.dateCompleted, id: id})
+        }
+    }, [toggledTodo])
     return (
        <div>
           <h3>Title: {title}</h3>
+          <Link href={`/post/${id}`}>{title}</Link>
           <div>Description: {description}</div>
           <br />
           <i><b>Created on: {dateCreated}</b></i>
           <br />
           <label>completed?</label>
-          <input type="checkbox" onChange={handleCompleted} />
+          <input disabled={state.user.access_token==null} type="checkbox" checked={complete} onChange={(e)=>{toggleTodo(id, e.target.checked)}} />
           {complete && <><label>completed at: {dateCompleted} </label><br/></>}
-          <button onClick = {handleDelete}>Delete</button>
+          <button disabled={state.user.access_token==null} onClick = {(e) => {deleteTodo(id)}}>Delete</button>
       </div> 
  )
 }

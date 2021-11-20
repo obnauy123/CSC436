@@ -9,7 +9,7 @@ export default function List () {
         
       <div>
         <h3>List</h3>
-       {posts.map((p, i) => <Post {...p} id ={p.id} title={p.title} description={p.description} dateCreated={p.dateCreated} complete={p.complete} dateCompleted={p.dateCompleted} key={'post-' + i} />)}
+       {posts.map((p, i) => <Post {...p} id ={p._id} title={p.title} description={p.description} dateCreated={p.dateCreated} complete={p.complete} dateCompleted={p.dateCompleted} key={'post-' + i} />)}
       </div> 
       )
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useContext } from 'react/cjs/react.development';
+import { useContext } from 'react';
 import { StateContext } from '../Contexts'
 export default function Logout() {
   const {state, dispatch} = useContext(StateContext)
@@ -11,7 +11,7 @@ export default function Logout() {
 
     return (
       <form onSubmit={handleSubmit}>
-         Logged in as: <b>{user}</b>
+         Logged in as: <b>{user.username}</b>
          <input type="submit" value="Logout" />
       </form>
      )

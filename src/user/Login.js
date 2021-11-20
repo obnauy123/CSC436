@@ -1,46 +1,48 @@
-import React, { useState, useEffect} from 'react'
-import { useContext } from 'react/cjs/react.development';
+import React, { useContext, useState, useEffect} from 'react'
 import { useResource } from 'react-request-hook';
 import { StateContext } from '../Contexts';
 import {Form, Modal, Button} from 'react-bootstrap'
+import { useNavigation } from 'react-navi';
+
 export default function Login({show, handleClose}) {
+    const navigation = useNavigation()
     const [ user, login ] = useResource((username, password) => ({
-        url: `/login/${encodeURI(username)}/${encodeURI(password)}`,
-        method: 'get'
-    }))
-    const [ posts, getPosts ] = useResource(() => ({
-        url: '/posts',
-        method: 'get'
-      }))
-    useEffect(getPosts, [])
+                url: 'auth/login',
+                method: 'post',
+                data: {username, password}
+            }))
 
     useEffect(() => {
-        if (posts && posts.data) {
-            dispatch({ type: 'FETCH_POSTS', posts: posts.data.reverse() })
-        }
-    }, [posts])
+                if (user && user.isLoading === false && (user.data || user.error)) {
+                    if (user.error) {
+                        setLoginFailed(true)
+                        alert('failed')
+                    } else {
+                        setLoginFailed(false)
+                        console.log(user.data)
+                        dispatch({ type: 'LOGIN', username, access_token: user.data.access_token })          
+                        navigation.navigate('/')
+                    }
+                } 
+            }, [user])
+            
 
-    const [ loginFailed, setLoginFailed ] = useState(false)
-    const {dispatch} = useContext(StateContext)
-    useEffect(() => {
-        if (user && user.data) {
-            if (user.data.length > 0) {
-                            setLoginFailed(false)
-                            dispatch({ type: 'LOGIN', username: user.data[0].username })
-            } else {
-                            setLoginFailed(true)
-            }
-        } 
-    }, [user])
+        const {dispatch} = useContext(StateContext)
 
-    const [loginData, setLoginData] = useState({
-        username: "",
-        password: ""
-      });
+        const [username, setUsername] = useState('');
+        const [ password, setPassword ] = useState('')
+        const [ loginFailed, setLoginFailed ] = useState(false)
+    
+        function handleUsername (evt) { setUsername(evt.target.value) } 
+        function handlePassword (evt) { setPassword(evt.target.value) }
+
+    
+
+    
 
     const handleSubmit = e => {
         e.preventDefault();
-        login(loginData.username, loginData.password)
+        login(username, password)
         handleClose()
     };
     return (
@@ -51,14 +53,14 @@ export default function Login({show, handleClose}) {
                 </Modal.Header>
                 <Modal.Body>
                     <Form.Label htmlFor="login-username">Username:</Form.Label>
-                    <Form.Control type="text" value={loginData.username} onChange={(e)=> setLoginData({...loginData, username: e.target.value})} name="login-username" id="login-username" />
+                    <Form.Control type="text" value={username} onChange={handleUsername} name="login-username" id="login-username" />
                     <Form.Label htmlFor="login-password">Password:</Form.Label>
-                    <Form.Control type="password" value={loginData.password} onChange={(e)=> setLoginData({...loginData, password: e.target.value})} name="login-password" id="login-password" />
+                    <Form.Control type="password" value={password} onChange={handlePassword} name="login-password" id="login-password" />
                     {loginFailed && <Form.Text style={{ color: 'red' }}>Invalid username or password</Form.Text>}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>Cancel</Button>
-                    <Button variant="primary" disabled={loginData.username.length === 0} type="submit">Login</Button>
+                    <Button variant="primary" disabled={username.length === 0} type="submit">Login</Button>
                 </Modal.Footer>
             </Form>
         </Modal>

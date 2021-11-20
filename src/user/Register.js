@@ -1,29 +1,39 @@
-import React, { useState, useEffect} from 'react'
-import { useContext } from 'react/cjs/react.development';
+import React, {useContext, useState, useEffect} from 'react'
 import { useResource } from 'react-request-hook';
 import { StateContext } from '../Contexts';
 import {Form, Modal, Button} from 'react-bootstrap'
 
 export default function Register({show, handleClose}) {
   const [ user, register] = useResource((username, password) => ({
-    url: '/users',
+    url: 'auth/register',
     method: 'post',
-    data: { username, password }
+    data: { username, password, 'passwordConfirmation': password }
   }))
 
   const {dispatch} = useContext(StateContext);
+  const [ status, setStatus] = useState("");
+
 
   useEffect(() => {
-      if (user && user.data) {
-          dispatch({ type: 'REGISTER', username: user.data.username })
-      }
-  }, [user])
+      if (user && user.isLoading === false && (user.data || user.error)) {
+        if (user.error) {
+          setStatus("Registration failed, please try again later.")
+          alert("fail")
+        } else {
+          
+          setStatus("Registration successful. You may now login.")
+          alert("success")
+        }
+      }
+    }, [user])
 
   const [registerData, setRegisterData] = useState({
     username: "",
     password: "",
     passwordRepeat: ""
   });
+
+
   const handleSubmit = e =>{
     e.preventDefault();
     register(registerData.username, registerData.password);

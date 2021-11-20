@@ -1,15 +1,19 @@
-import React, {useState, useContext} from 'react'
-import { StateContext } from './Contexts'
+import React, {useState, useEffect, useContext} from 'react';
+import { StateContext } from './Contexts';
 import { useResource } from 'react-request-hook';
+import { useNavigation } from 'react-navi';
 
 export default function PostEnter(){
     const {state, dispatch} = useContext(StateContext)
     const {user} = state;
-    const [post , createPost ] = useResource(({title, description, complete, dateCompleted}) => ({
-        url: '/posts',
-        method: 'post',
-        data: {title, description, complete, dateCompleted}
-    }))
+    const [post , createPost ] = useResource(({ title, description, author }) => ({
+                url: '/post',
+                method: 'post',
+                headers: {"Authorization": `${state.user.access_token}`},
+                data: { title, description, author }
+            }))
+
+    const navigation = useNavigation()
 
     const[postData, setPostData] = useState({
         title: "",
@@ -19,8 +23,14 @@ export default function PostEnter(){
     const handleSubmit = e => {
         e.preventDefault();
         createPost({title:postData.title, description:postData.description, complete:false, dateCompleted:null});
-        dispatch({type:"CREATE_POST", postData});
     };
+    useEffect(() => {
+                if (post && post.data) {
+                    dispatch({ type: 'CREATE_POST', title: post.data.title, description: post.data.description, id: post.data.id, author: user.username })
+                    console.log(post.data)
+                    navigation.navigate(`/post/${post.data.id}`)
+                }
+            }, [post])
 
     return (
         
